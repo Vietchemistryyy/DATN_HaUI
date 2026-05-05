@@ -1,0 +1,94 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Data files
+data/*.csv
+data/processed/*.csv
+# data/**/*.csv  # Bỏ comment nếu muốn ignore toàn bộ CSV trong data/
+*.pkl
+*.pickle
+*.joblib
+*.npy
+*.npz
+*.parquet
+*.feather
+*.arrow
+
+# Model files
+models/**/*.bin
+models/**/*.pt
+models/**/*.pth
+models/**/*.safetensors
+models/**/*.onnx
+models/**/*.h5
+models/**/*.hdf5
+
+# Results
+results/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+# *.ipynb  # Chỉ bỏ comment nếu bạn không commit notebook
+
+# Testing & Coverage
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+*.cover
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables & Secrets
+.env
+.env.local
+.env.*
+secrets/
+credentials/
+*.key
+*.pem
+*.crt
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.zip
+*.tar.*
+*.gz
+*.rar
+*.7z
