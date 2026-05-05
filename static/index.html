@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Fact-Checker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- LEFT PANEL -->
+        <aside class="panel left-panel">
+            <header class="app-header">
+                <div class="logo-container">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round" class="header-icon">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    <h1>Fake News Detection</h1>
+                </div>
+                <p>Hybrid System: Fine-tuned RoBERTa + LLMs</p>
+            </header>
+
+            <section class="input-section">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="text">Paste Text</button>
+                    <button class="tab-btn" data-tab="url">Article URL</button>
+                </div>
+
+                <div class="tab-content active" id="text-tab">
+                    <textarea id="news-text" placeholder="Paste the news article content here to analyze..."></textarea>
+                    <div class="char-count"><span id="char-count">0</span> / 5000</div>
+                </div>
+
+                <div class="tab-content" id="url-tab">
+                    <div class="url-input-container">
+                        <input type="url" id="news-url" placeholder="https://example.com/article...">
+                    </div>
+                </div>
+
+                <button id="analyze-btn" class="primary-btn">
+                    <span class="btn-text">Run Analysis</span>
+                    <span class="loader hidden"></span>
+                </button>
+
+                <div id="error-message" class="error-msg hidden"></div>
+            </section>
+
+            <footer class="footer-note">
+                <p class="footer-text">Secure cross-verification pipeline running locally and via cloud.</p>
+                <div class="powered-by">
+                    <span class="power-title">Intelligence APIs</span>
+                    <div class="ai-badges">
+                        <span class="ai-badge roberta">RoBERTa Base</span>
+                        <span class="ai-badge llama">Llama 3 (Groq)</span>
+                        <span class="ai-badge gemini">Gemini 2.5 Flash</span>
+                    </div>
+                </div>
+            </footer>
+        </aside>
+
+        <!-- RIGHT PANEL -->
+        <main class="panel right-panel">
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state">
+                <div class="icon-pulse"></div>
+                <h2>Awaiting Input</h2>
+                <p>Provide a text or URL on the left to initiate the cross-verification pipeline.</p>
+            </div>
+
+            <!-- Result Section -->
+            <section id="result-section" class="result-section hidden">
+                <div class="result-header">
+                    <h2 class="section-title">Analysis Report</h2>
+                    <button id="reset-btn" class="icon-btn" title="Clear Results">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                        Clear
+                    </button>
+                </div>
+
+                <!-- Main Verdict Card -->
+                <div class="verdict-card" id="main-verdict">
+                    <div class="verdict-card-top">
+                        <div class="model-badge">Primary Classifier: RoBERTa</div>
+                        <div class="confidence-label">Confidence: <span id="main-confidence">0%</span></div>
+                    </div>
+
+                    <div class="verdict-result">
+                        <span id="verdict-badge" class="badge">UNKNOWN</span>
+                    </div>
+
+                    <div class="probability-bars">
+                        <div class="prob-row">
+                            <div class="prob-label">Real</div>
+                            <div class="prob-bar-bg">
+                                <div id="prob-real" class="prob-bar-fill real"></div>
+                            </div>
+                            <div class="prob-value" id="val-real">0%</div>
+                        </div>
+                        <div class="prob-row">
+                            <div class="prob-label">Fake</div>
+                            <div class="prob-bar-bg">
+                                <div id="prob-fake" class="prob-bar-fill fake"></div>
+                            </div>
+                            <div class="prob-value" id="val-fake">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LLM Verification Section -->
+                <div id="llm-section" class="llm-section hidden">
+                    <div class="llm-title-wrapper">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <h3 class="llm-title">Escalated to LLM Fact-Checker</h3>
+                    </div>
+                    <div class="llm-card">
+                        <div class="llm-header">
+                            <div class="model-badge secondary">Secondary Engine Activated</div>
+                            <div class="confidence-label">Confidence: <span id="llm-confidence">0%</span></div>
+                        </div>
+
+                        <div class="llm-verdict">
+                            Final Verdict: <span id="llm-badge" class="badge-small">UNKNOWN</span>
+                        </div>
+
+                        <div class="llm-reasoning">
+                            <h4>Analytical Reasoning:</h4>
+                            <p id="llm-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>
