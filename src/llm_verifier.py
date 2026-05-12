@@ -153,8 +153,7 @@ def hybrid_predict(
 
     # Step 3: Temperature Scaling (if available)
     if temp_scaler is not None:
-        import numpy as np
-        logits = torch.tensor(np.log(mc_result['mean_probs'] + 1e-10))
+        logits = torch.tensor(mc_result['mean_logits'])
         calibrated = temp_scaler.calibrate(logits.to(device))
         calibrated = calibrated.cpu().numpy()
         confidence = float(calibrated[0][pred_idx])

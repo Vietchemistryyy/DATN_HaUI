@@ -148,6 +148,7 @@ def mc_dropout_predict(
     Returns:
         Dict with keys:
         - 'mean_probs': Mean probabilities across runs [batch, num_labels]
+        - 'mean_logits': Mean raw logits across runs [batch, num_labels]
         - 'std_probs': Std deviation of probabilities [batch, num_labels]
         - 'predictions': Argmax of mean probs [batch]
         - 'uncertainty': Mean std across labels (scalar per sample) [batch]
@@ -163,17 +164,21 @@ def mc_dropout_predict(
     enable_mc_dropout(model)
 
     all_probs = []
+    all_logits = []
 
     for _ in range(n_runs):
         with torch.no_grad():
             outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+            all_logits.append(outputs.logits.cpu().numpy())
             probs = F.softmax(outputs.logits, dim=-1)
             all_probs.append(probs.cpu().numpy())
 
-    all_probs = np.array(all_probs)  # [n_runs, batch, num_labels]
+    all_probs = np.array(all_probs)    # [n_runs, batch, num_labels]
+    all_logits = np.array(all_logits)  # [n_runs, batch, num_labels]
 
-    mean_probs = all_probs.mean(axis=0)     # [batch, num_labels]
-    std_probs = all_probs.std(axis=0)       # [batch, num_labels]
+    mean_probs = all_probs.mean(axis=0)      # [batch, num_labels]
+    mean_logits = all_logits.mean(axis=0)    # [batch, num_labels]
+    std_probs = all_probs.std(axis=0)        # [batch, num_labels]
     predictions = mean_probs.argmax(axis=1)  # [batch]
     uncertainty = std_probs.mean(axis=1)     # [batch]
 
@@ -182,6 +187,7 @@ def mc_dropout_predict(
 
     return {
         'mean_probs': mean_probs,
+        'mean_logits': mean_logits,
         'std_probs': std_probs,
         'predictions': predictions,
         'uncertainty': uncertainty,
