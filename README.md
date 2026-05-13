@@ -6,7 +6,7 @@ Hệ thống phát hiện tin giả sử dụng kiến trúc hybrid multi-stage 
 
 ## Demo
 
-Watch Demo Video:
+Watch Demo Video: https://youtu.be/LsJlCSz_lJo
 
 ## System Architecture
 
